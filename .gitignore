@@ -1,6 +1,6 @@
 *.png
 *.odp
-*.env
+\.~lock*#
 savvy_secretes.py
 images/
 assets/
