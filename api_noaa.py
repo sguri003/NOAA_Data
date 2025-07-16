@@ -3,7 +3,15 @@
 #   http://mechatronicsolutionsllc.com/
 #   http://www.savvysolutions.info/savvycodesolutions/
 
-
+#   Altered by:  Steven Guridi
+#   Former Florida Power & Light Worker living in florida/storm export
+#   I have not been able to pull data from NOAA since 2021. 
+#   FYI: NOAA IS NOT CELLECTIN STORM DATA AFTER 2O21 NOR TEMP, WIND, ETC.
+#   ORIGINAL EDITOR: MARK W KIESHI HAD TO HARDCDE STATIONS BECAUSE OF CHANGES TO NOAA
+#   API FROM 2020-2021. NOAA IS NOT RECORDING AND THIS WHAT FIRST RESPONDER'S USE FOR STORM ASSESMENT. 
+#   OBJECTIVE: TO CHANGE MARKS CODE AND FIND WEATHER DATA POINTS. NOAA DOES NOT STORE ANY STORM NAMES PRIOR 2021
+#   2025 FLORIDA IS HAVING A LOT OF HAIL, I AM ALTERING THE CODE AND JSON RESULTS TO SOMEHOW FIND WEATHER DATA POINTS.
+#   CONCLUSION: ALTERING MIKES CODE TO FIND WIND, TEMP, HUMIDITY PAST 2021. NO STORM NAMES WILL APPEAR THOUGH
 """
 Extraction of historical climate data from NOAA National Centers for Environmental Information (NCEI) using their new (2023) API.
 
@@ -111,28 +119,28 @@ import sys
 sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))      
 
 # API_GEOCODIO_KEY
-if Path.cwd().parts[len(Path.cwd().parts)-1]=="savvy" or str(Path(Path.cwd().parent).joinpath("savvy")) in sys.path:
+#if Path.cwd().parts[len(Path.cwd().parts)-1]=="savvy" or str(Path(Path.cwd().parent).joinpath("savvy")) in sys.path:
     # The folder 'savvy' is the current project path OR it exists in the Python interpreter's search path for modules.
     # Get the API Key from the module savvy_secrets and define the OS environment variable.
-    try:
-        from savvy_secrets import api_secrets
-    except Exception as e:
-        raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
-    if not "api_geocodio" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_geocodio'.")
-    os.environ['API_GEOCODIO_KEY'] = api_secrets['api_geocodio'][1]
+#   try:
+#       from savvy_secrets import api_secrets
+#    except Exception as e:
+#        raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
+#    if not "api_geocodio" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_geocodio'.")
+os.environ['API_GEOCODIO_KEY']
 # Verify the Windows environment variable API_GEOCODIO_KEY is set & demonstrate how to access it.
 if not os.getenv('API_GEOCODIO_KEY'): raise Exception("Windows environment variable 'API_GEOCODIO_KEY' not configured!  Try to load it from a .env file with dotenv:\nfrom dotenv import load_dotenv\nload_dotenv()")
 
 # API_NOAA_NCEI
-if Path.cwd().parts[len(Path.cwd().parts)-1]=="savvy" or str(Path(Path.cwd().parent).joinpath("savvy")) in sys.path:
+#if Path.cwd().parts[len(Path.cwd().parts)-1]=="savvy" or str(Path(Path.cwd().parent).joinpath("savvy")) in sys.path:
     # The folder 'savvy' is the current project path OR it exists in the Python interpreter's search path for modules.
     # Get the API Key from the module savvy_secrets and define the OS environment variable.
-    try:
-        from savvy_secrets import api_secrets
-    except Exception as e:
-        raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
-    if not "api_noaa_header_key_mwk" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_noaa_header_key_mwk'.")
-    os.environ['API_NOAA_NCEI'] = api_secrets['api_noaa_header_key_mwk'][1]
+#    try:
+#        from savvy_secrets import api_secrets
+#    except Exception as e:
+#        raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
+#    if not "api_noaa_header_key_mwk" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_noaa_header_key_mwk'.")
+os.environ['API_NOAA_NCEI']
 # Verify the Windows environment variable API_NOAA_NCEI is set & demonstrate how to access it.
 if not os.getenv('API_NOAA_NCEI'): raise Exception("Windows environment variable 'API_NOAA_NCEI' not configured!  Try to load it from a .env file with dotenv:\nfrom dotenv import load_dotenv\nload_dotenv()")
 # ---------------------------------------------------------------------------
@@ -233,7 +241,7 @@ def savvy_request_get(url:str=None, retries:int=3, headers:dict=None, verbose=Fa
 
 # ---------------------------------------------------------------------------
 # NCEI Search Service API
-
+import requests
 def get_noaa_ncei_datatypes_by_dataset(dataset:str=None, verbose:bool=False):
     """
     Return a list of datatypes for 'dataset' from the lates NCEI Search Service API.
@@ -276,8 +284,8 @@ def get_noaa_ncei_datatypes_by_dataset(dataset:str=None, verbose:bool=False):
     data_types_to_ignore = ["REM", "REPORT_TYPE", "SOURCE", "QUALITY_CONTROL", "CALL_SIGN"]
 
     try:
-        #req = requests.get(url, data=None, json=None, headers=None)
-        req = savvy_request_get(url=url, headers=headers)
+        req =  requests.get(url, data=None, json=None, headers=None)
+        #req = savvy_request_get(url=url, headers=headers)
     except Exception as e:
         print('ERROR: ' + repr(e), ' fn()', url)
         print(f"get_noaa_ncei_stations_by_search() experienced a HTTP GET error while executing the request for url {url}")
@@ -960,7 +968,7 @@ def get_noaa_ncei_stations_by_search(dataset:str=None, lat:float=None, lon:float
 
         # https://www.ncei.noaa.gov/access/services/search/v1/data?dataset=global-hourly&boundingBox=41.44077,-77.12267,39.44077,-75.12267&dataTypes=TMIN,TMAX,PRCP&limit=30&offset=0&startDate=2016-01-01T00:00:00&endDate=2017-12-31T23:59:59
         # https://www.ncei.noaa.gov/access/services/search/v1/data?dataset=global-hourly&boundingBox=35.462327,-82.563951,35.412327,-82.513951&dataTypes=TMPP&limit=30&offset=0&startDate=2016-01-01T00:00:00&endDate=2017-12-31T23:59:59
-
+        #CREATES QUERY STRING TO BE PLACED IN REQUES/API/ENDPOINT URL
         url = "https://www.ncei.noaa.gov/access/services/search/v1/data"
         url += f"?dataset={dataset}"
         url += "&bbox=" + str(round(nw_lat,5)) + "," + str(round(nw_lon,5)) + "," + str(round(se_lat,5)) + "," + str(round(se_lon,5))
@@ -974,8 +982,8 @@ def get_noaa_ncei_stations_by_search(dataset:str=None, lat:float=None, lon:float
         headers={'token': os.getenv('API_NOAA_NCEI')}
         
         try:
-            #req = requests.get(url, data=None, json=None, headers=None)
-            req = savvy_request_get(url=url, headers=headers)
+            req = requests.get(url, data=None, json=None, headers=headers)
+            #req = savvy_request_get(url=url, headers=headers)
         except Exception as e:
             print('ERROR: ' + repr(e), ' fn()', url)
             print(f"get_noaa_ncei_stations_by_search() experienced a HTTP GET error while executing the request for url {url}")
@@ -1165,7 +1173,7 @@ def parse_ncei_search_results(dataset:str=None, datatypes:list=None, limit:int=1
     headers={'token': os.getenv('API_NOAA_NCEI')}
     
     try:
-        req = savvy_request_get(url=url, headers=headers)
+        req = requests.get(url=url, headers=headers)
     except Exception as e:
         print('ERROR: ' + repr(e), ' fn()', url)
         print(f"get_noaa_ncei_stations_by_search() experienced a HTTP GET error while executing the request for url {url}")
@@ -1402,7 +1410,7 @@ def get_noaa_ncei_units_by_datatype(datatype:str=None, units:str=None):
 
     if datatype is None: raise Exception("Argument 'datatype' was not passed to the fn")
     if units is None: raise Exception("Argument 'datatype' not passed to the fn")
-    if not units in ["standard","metric"]: raise Exception(f"The value for argument 'units' is invalid.  Must be one of {["standard","metric"]}")
+    if not units in ["standard","metric"]: raise Exception(f"The value for argument 'units' is invalid.  Must be one of {['standard','metric']}")
 
     datatype = str(datatype).upper()
     units = str(units).lower()
@@ -1617,7 +1625,7 @@ def ex_get_nooa_ncei_data_by_stn(input:list=None, stations:list=None):
     """
 
     from random import randint
-
+    station_ids= "USC00081306"
     if not stations is None and len(stations) == 0: raise Exception(f"Argument 'stations' has no data.  {stations}")
     
     if input is None and stations is None:
@@ -1640,9 +1648,10 @@ def ex_get_nooa_ncei_data_by_stn(input:list=None, stations:list=None):
             [34619.0, 1.8, 18735.9, 'USC00086315', 25.95, -80.2158, '2001-07-01T00:00:00', '2025-05-29T23:59:59'],
             [46701.1, 1.4, 33356.9, 'USC00087020', 25.5819, -80.4361, '1958-12-01T00:00:00', '2025-05-07T23:59:59'],
         ]
-        #stations = [stations[0][3]]     # USC00081306
-        stations = [stations[0][3], stations[1][3]]        # "USC00081306","USW00012888"
-
+        stations = stations[0][3]     # USC00081306
+        #stations = stations[0][3] # stations[1][3]]        # "USC00081306","USW00012888"
+        station_id= stations
+        print(f"Stations if   {stations}")
         dataset = "daily-summaries"
         start_date = "2010-02-01"
         end_date = "2010-02-01"
@@ -1650,7 +1659,7 @@ def ex_get_nooa_ncei_data_by_stn(input:list=None, stations:list=None):
 
     else:
         # Get the first station id from 'stations'.
-        station_ids = [stations[0][3]]
+        station_ids = stations[0][3]
         """
         # Get the station ids from 'stations'.
         station_ids = []
@@ -1764,19 +1773,19 @@ def ex_parse_ncei_search_results():
 if __name__ == '__main__':
 
 
-    #ex_get_gps_bounding_box()
+    ex_get_gps_bounding_box()
 
-    #ex_get_noaa_ncei_units_by_datatype()
+    ex_get_noaa_ncei_units_by_datatype()
 
-    #ex_get_noaa_ncei_datatypes_by_dataset()
+    ex_get_noaa_ncei_datatypes_by_dataset()
 
-    #input, stations = ex_get_noaa_ncei_stations_by_search()
+    input, stations = ex_get_noaa_ncei_stations_by_search()
 
-    #ex_get_nooa_ncei_data_by_stn()
+    ex_get_nooa_ncei_data_by_stn()
 
     # Get DAILY summary data for a specific location identified by inputs_idx=6.  See ex_get_noaa_ncei_stations_by_search()
-    input, stations = ex_get_noaa_ncei_stations_by_search(inputs_idx=6)
-    ex_get_nooa_ncei_data_by_stn(input, stations)
+    #input, stations = ex_get_noaa_ncei_stations_by_search(inputs_idx=6)
+    #ex_get_nooa_ncei_data_by_stn(input, stations)
     """
     """
 
@@ -1797,7 +1806,4 @@ if __name__ == '__main__':
 
     # Report the script execution time
     print(f"\nElapsed time {round(perf_counter()-t_start_sec,3)} s")
-
-    # ---------------------------------------------------------------------------------------------------------
-
 

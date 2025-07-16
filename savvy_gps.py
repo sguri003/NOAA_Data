@@ -71,27 +71,29 @@ sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))
 if Path.cwd().parts[len(Path.cwd().parts)-1]=="savvy" or str(Path(Path.cwd().parent).joinpath('savvy')) in sys.path:
     # The folder 'savvy' is the current project path OR it exists in the Python interpreter's search path for modules.
     # Get the API Key from the module savvy_secrets and define the OS environment variable.
-    try:
-        from savvy_secrets import api_secrets
-    except Exception as e:
-        raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
-    if not "api_google_maps" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_google_maps'.")
-    os.environ['GOOGLE_MAPS_API_KEY'] = api_secrets['api_google_maps'][1]
+    #try:
+    #    from savvy_secrets import api_secrets
+    #except Exception as e:
+    #    raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
+    #if not "api_google_maps" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_google_maps'.")
+    os.environ['GOOGLE_MAPS_API_KEY']# = 'AIzaSyDWihLFg-kzgyEWKFDd-j6lNj3Wl6TH924'
 # Make sure Windows environment variable GOOGLE_MAPS_API_KEY is set & demonstrate how to access it.
-if not os.getenv('GOOGLE_MAPS_API_KEY'): raise Exception("Windows environment variable 'GOOGLE_MAPS_API_KEY' not configured!  Try to load it from a .env file with dotenv:\nfrom dotenv import load_dotenv\nload_dotenv()")
+if not os.getenv('GOOGLE_MAPS_API_KEY'): 
+    raise Exception("Windows environment variable 'GOOGLE_MAPS_API_KEY' not configured!  Try to load it from a .env file with dotenv:\nfrom dotenv import load_dotenv\nload_dotenv()")
 
 # API_GEOCODIO_KEY
 if Path.cwd().parts[len(Path.cwd().parts)-1]=="savvy" or str(Path(Path.cwd().parent).joinpath("savvy")) in sys.path:
     # The folder 'savvy' is the current project path OR it exists in the Python interpreter's search path for modules.
     # Get the API Key from the module savvy_secrets and define the OS environment variable.
-    try:
-        from savvy_secrets import api_secrets
-    except Exception as e:
-        raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
-    if not "api_geocodio" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_geocodio'.")
-    os.environ['API_GEOCODIO_KEY'] = api_secrets['api_geocodio'][1]
+    #try:
+    #    from savvy_secrets import api_secrets
+    #except Exception as e:
+    #    raise Exception(f"{e}\nThe folder 'savvy' is not the current project folder NOR does it exist in the Python interpreter's search path for modules (sys.path). Try: sys.path.insert(1, str(Path(Path.cwd().parent).joinpath('savvy')))")
+    #if not "api_geocodio" in api_secrets.keys(): raise Exception("ERROR: api_secrets from savvy_secrets.py doesn't have the key 'api_geocodio'.")
+    os.environ['API_GEOCODIO_KEY']# ='cfee7280eef067860f682e6b6b8ac98e8b6bc72'
 # Verify the Windows environment variable API_GEOCODIO_KEY is set & demonstrate how to access it.
-if not os.getenv('API_GEOCODIO_KEY'): raise Exception("Windows environment variable 'API_GEOCODIO_KEY' not configured!  Try to load it from a .env file with dotenv:\nfrom dotenv import load_dotenv\nload_dotenv()")
+if not os.getenv('API_GEOCODIO_KEY'): 
+    raise Exception("Windows environment variable 'API_GEOCODIO_KEY' not configured!  Try to load it from a .env file with dotenv:\nfrom dotenv import load_dotenv\nload_dotenv()")
 
 
 
@@ -240,6 +242,7 @@ def get_ip_gps_coordinates_ip_api():
     import json
 
     try:
+        #geolocates your location long and lat and city.
         response = requests.get('http://ip-api.com/json/')
         response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
         data = response.json()
